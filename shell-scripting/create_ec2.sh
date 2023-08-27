@@ -4,7 +4,7 @@ NAMES=("mongodb" "redis" "mysql" "rabbitmq" "catalogue" "user" "cart" "shipping"
 INSTANCE_TYPE=""
 IMAGE_ID=ami-03265a0778a880afb
 SECURITY_GROUP_ID=sg-038b4e8f15953a3f3
-DOMIN_NAME=devopsjoin.online
+DOMAIN_NAME=devopsjoin.online
 
 # if mysql or mongodb instance_type should be t3.medium, for all others it is t2.micro
 
@@ -17,21 +17,20 @@ do
         INSTANCE_TYPE="t2.micro"
     fi
     echo "creating  $i instance"
-    IP_ADDRESS=$(aws ec2 run-instance --image-id $IMAGE_ID --instance-type $INSTANCE_TYPE --security-group-ids
-    $SECURITY_GROUP_ID --tag-specifications "ResourceType=instance,Tags=[{key=Name,Value=$i}]" | jq -r '.Instances[0].PrivateIpAddress')
+    IP_ADDRESS=$(aws ec2 run-instances --image-id $IMAGE_ID --instance-type $INSTANCE_TYPE --security-group-ids $SECURITY_GROUP_ID --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$i}]" | jq -r '.Instances[0].PrivateIpAddress')
     echo "created $i instance: $IP_ADDRESS"
 
     aws route53 change-resource-record-sets --hosted-zone-id Z06539457LGNW05SGH4I --change-batch '
     { 
         "Changes": [{
-        "Action": "CRATE",
-                    "ResourcesRecordsSet": {
+        "Action": "CREATE",
+                    "ResourceRecordSet": {
                         "Name": "'$i.$DOMAIN_NAME'",
-                        "TYPE": "A",
+                        "Type": "A",
                         "TTL": 300,
-                        "RessourceRecords": [{"value": "'$IP_ADDRESS'"}]
-                    }
-        }]
+                        "ResourceRecords": [{"Value": "'$IP_ADDRESS'"}]
+                  
+		    }}]
     }
     '
 done

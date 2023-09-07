@@ -22,7 +22,6 @@ do
 
     aws route53 change-resource-record-sets --hosted-zone-id  Z06539457LGNW05SGH4I --change-batch '
     {
-   
             "Changes": [{
             "Action": "CREATE",
                         "ResourceRecordSet": {
@@ -30,7 +29,7 @@ do
                             "Type": "A",
                             "TTL": 300,
                             "ResourceRecords": [{ "Value": "'$IP_ADDRESS'"}]
-    }}]
+                        }}]
     }
     '
 done

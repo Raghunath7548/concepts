@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NAMES=("mongodb" "redis" "mysql" "rabbitmq" "catalogue" "user" "cart" "shipping" "payment" "dispatch" "web")
+NAMES=$@
 INSTANCE_TYPE=""
 IMAGE_ID=ami-03265a0778a880afb
 SECURITY_GROUP_ID=sg-038b4e8f15953a3f3
@@ -8,7 +8,7 @@ DOMAIN_NAME=devopsjoin.online
 
 # if mysql or mongodb instance_type should be t3.medium, for all others it is t2.nicro.
 
-for i in "${NAMES[@]}"
+for i in $@
 do 
     if [[ $i == "mongodb" || $i == "mysql" ]];
     then
